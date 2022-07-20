@@ -1,9 +1,9 @@
 export interface user {
-  id: number;
+  id: string;
   name: string;
   jobDescriptor: string;
   username: string;
   profilePhoto?: string;
   email: string;
-  createdAt: string;
+  createdAt: Date;
 }

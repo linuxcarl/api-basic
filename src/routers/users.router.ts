@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { faker } from '@faker-js/faker';
-import { user } from './interfeces/user.interface';
+import { user } from '../interfeces/user.interface';
 const router = express.Router();
 const users: user[] = [];
 

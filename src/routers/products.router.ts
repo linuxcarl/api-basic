@@ -1,52 +1,55 @@
 import express, { Request, Response } from 'express';
 import { faker } from '@faker-js/faker';
+import ProductService from '../services/product.service';
 const router = express.Router();
-
+const productService = new ProductService();
 router.get('/', (req: Request, res: Response) => {
-  const products = [];
-  const { size } = req.query;
-  const limit = size || 10;
-  for (let index = 0; index < limit; index++) {
-    products.push({
-      name: faker.commerce.productName(),
-      price: parseInt(faker.commerce.price(), 10),
-      image: faker.image.imageUrl(),
-    });
-  }
+  const products = productService.find();
+  // const { size } = req.query;
   res.json(products);
 });
 
 router.get('/:id', (req: Request, res: Response) => {
   const { id } = req.params;
-  res.json({
-    id,
-    name: 'Producto ' + id,
-    price: parseInt(faker.commerce.price(), 10),
-    image: faker.image.imageUrl(),
-  });
+  const product = productService.findOne(id);
+  if (!product) {
+    res.status(404).json({ message: 'Product not found' });
+  } else {
+    res.json({
+      ...product,
+    });
+  }
 });
 
 router.post('/', (req: Request, res: Response) => {
   const body = req.body;
-  res.json({
-    message: 'created',
-    data: body,
-  });
+  const product = productService.create(body);
+  if (!product) {
+    res.status(400).json({ message: 'Product not created' });
+  } else {
+    res.status(201).json({
+      ...product,
+    });
+  }
 });
 router.patch('/:id', (req: Request, res: Response) => {
-  const { id } = req.params;
   const body = req.body;
-  res.json({
-    message: 'update',
-    data: body,
-    id,
-  });
+  const { id } = req.params;
+  const product = productService.update(id, body);
+  if (!product) {
+    res.status(404).json({ message: 'Product not found' });
+  } else {
+    res.json({
+      ...product,
+    });
+  }
 });
 router.delete('/:id', (req: Request, res: Response) => {
   const { id } = req.params;
+  const idDeleted = productService.delete(id);
   res.json({
     message: 'deleted',
-    id,
+    ...idDeleted,
   });
 });
 
