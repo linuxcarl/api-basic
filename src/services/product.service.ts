@@ -16,6 +16,7 @@ class ProductService {
         price: parseInt(faker.commerce.price(), 10),
         image: faker.image.imageUrl(),
         description: faker.lorem.paragraph(),
+        isBlocked: faker.datatype.boolean(),
       });
     }
     return listProducts;
@@ -27,6 +28,8 @@ class ProductService {
     const product = this.products.find((r) => r.id === id);
     if (!product) {
       throw boom.notFound('product not found with boom');
+    } else if (!!product.isBlocked) {
+      throw boom.forbidden('product is blocked');
     }
     return product;
   }
