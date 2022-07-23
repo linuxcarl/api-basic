@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Product } from '../interfeces/product.interface';
+import boom from '@hapi/boom';
 class ProductService {
   products: Product[] = [];
   constructor() {
@@ -19,14 +20,18 @@ class ProductService {
     }
     return listProducts;
   }
-  find(): Product[] {
+  async find(): Promise<Product[]> {
     return this.products;
   }
-  findOne(id: string) {
-    return this.products.find((product) => product.id === id);
+  async findOne(id: string) {
+    const product = this.products.find((r) => r.id === id);
+    if (!product) {
+      throw boom.notFound('product not found with boom');
+    }
+    return product;
   }
 
-  create(body: Product) {
+  async create(body: Product) {
     const product = {
       id: faker.datatype.uuid(),
       ...body,
@@ -35,18 +40,19 @@ class ProductService {
     return product;
   }
 
-  update(id: string, body: Product) {
+  async update(id: string, body: Product) {
     const index = this.products.findIndex((id) => id === id);
-    if (index > -1) {
-      this.products[index] = { ...this.products[index], ...body };
+    if (index === -1) {
+      throw boom.notFound('product not found');
     }
+    this.products[index] = { ...this.products[index], ...body };
     return this.findOne(id);
   }
 
-  delete(id: string) {
+  async delete(id: string) {
     const index = this.products.findIndex((r) => r.id === id);
     if (index === -1) {
-      throw new Error('product not found');
+      throw boom.notFound('product not found with boom');
     }
     this.products.splice(index, 1);
     return { id };
