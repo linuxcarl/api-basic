@@ -30,7 +30,7 @@ const options = {
     }
   },
 };
-app.use(cors());
+app.use(cors(options));
 app.use(logErrors);
 app.use(boomErrorHandler);
 app.use(errorHandler);
