@@ -1,6 +1,13 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { faker } from '@faker-js/faker';
 import ProductService from '../services/product.service';
+import { validatorHandler } from '../middlewares/validation.handler';
+import {
+  createProductSchema,
+  updateProductSchema,
+  getProductSchema,
+} from '../schemas/product.schema';
+import { create } from 'domain';
+
 const router = express.Router();
 const productService = new ProductService();
 router.get('/', async (req: Request, res: Response) => {
@@ -9,29 +16,39 @@ router.get('/', async (req: Request, res: Response) => {
   res.json(products);
 });
 
-router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { id } = req.params;
-    const product = await productService.findOne(id);
-    res.json(product);
-  } catch (error) {
-    next(error);
+router.get(
+  '/:id',
+  validatorHandler(getProductSchema, 'params'),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const product = await productService.findOne(id);
+      res.json(product);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
-router.post('/', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const body = req.body;
-    const product = await productService.create(body);
-    res.status(201).json({
-      ...product,
-    });
-  } catch (error) {
-    next(error);
+router.post(
+  '/',
+  validatorHandler(createProductSchema, 'body'),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const body = req.body;
+      const product = await productService.create(body);
+      res.status(201).json({
+        ...product,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 router.patch(
   '/:id',
+  validatorHandler(getProductSchema, 'params'),
+  validatorHandler(updateProductSchema, 'body'),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const body = req.body;
@@ -47,6 +64,7 @@ router.patch(
 );
 router.delete(
   '/:id',
+  validatorHandler(getProductSchema, 'params'),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
