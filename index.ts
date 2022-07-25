@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import routerApi from './src/routers/';
 import {
   errorHandler,
@@ -16,7 +17,20 @@ app.get('/', (req, res) => {
 });
 
 routerApi(app);
-
+const whiteList = ['http://localhost:3000', 'http://localhost:3001'];
+const options = {
+  origin: (
+    origin: any,
+    callback: (arg0: Error | null, arg1: boolean | undefined) => void
+  ) => {
+    if (whiteList.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('no permitido'), false);
+    }
+  },
+};
+app.use(cors());
 app.use(logErrors);
 app.use(boomErrorHandler);
 app.use(errorHandler);
