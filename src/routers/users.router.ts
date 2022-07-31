@@ -1,23 +1,14 @@
 import express, { Request, Response } from 'express';
-import { faker } from '@faker-js/faker';
 import { user } from '../interfeces/user.interface';
+import userService from '../services/user.service';
 const router = express.Router();
 const users: user[] = [];
 
-router.get('/', (req: Request, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
   const { size } = req.query;
   const limit = size || 10;
-  for (let index = 0; index < limit; index++) {
-    users.push({
-      id: faker.random.numeric(),
-      name: faker.name.findName(),
-      jobDescriptor: faker.name.jobDescriptor(),
-      username: faker.name.middleName(),
-      profilePhoto: faker.image.avatar(),
-      email: faker.internet.email(),
-      createdAt: new Date(),
-    });
-  }
+  const users = await userService.find();
+  console.log(users);
   res.json(users);
 });
 router.get('/:id', (req: Request, res: Response) => {
