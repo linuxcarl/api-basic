@@ -2,16 +2,16 @@ import { user } from '../interfeces/user.interface';
 import pool from '../libs/postgres';
 
 class UserService {
-  private pool: any;
+  private pool = pool;
   contructor() {
-    this.pool = pool;
-    this.pool.on('error', (err: any) => {
-      console.log('idle client error', err.message, err.stack);
-    }
+    this.pool.on('error', (err) => {
+      console.log('Unexpected error on idle client', err);
+      process.exit(-1);
+    });
   }
   async find(): Promise<user[]> {
-    const result = await this.pool.query('SELECT * FROM users');
-    return result.rows;
+    const { rows } = await this.pool.query('SELECT * FROM users', []);
+    return rows;
   }
 }
 export default new UserService();

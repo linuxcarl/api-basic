@@ -8,7 +8,6 @@ router.get('/', async (req: Request, res: Response) => {
   const { size } = req.query;
   const limit = size || 10;
   const users = await userService.find();
-  console.log(users);
   res.json(users);
 });
 router.get('/:id', (req: Request, res: Response) => {

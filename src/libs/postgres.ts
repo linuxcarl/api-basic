@@ -1,9 +1,9 @@
 import { Pool } from 'pg';
-const pool = new Pool({
-  user: 'kairos',
-  host: 'localhost',
-  database: 'platziverse',
-  password: 'admin123',
-  port: 5432,
-});
+import { config } from '../config/config';
+const { user = '', password = '' } = config.db;
+
+const USER = encodeURIComponent(user);
+const PASSWORD = encodeURIComponent(password);
+const URI = `postgres://${USER}:${PASSWORD}@${config.db.host}:${config.db.port}/${config.db.database}`;
+const pool = new Pool({ connectionString: URI });
 export default pool;
