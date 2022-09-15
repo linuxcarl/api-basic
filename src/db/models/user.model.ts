@@ -4,9 +4,9 @@ const USER_TABLE = 'users';
 const UserSchema = {
   id: {
     allowNull: false,
-    autoIncrement: true,
+    // defaultValue: DataTypes.UUIDV1, // Or DataTypes.UUIDV1
     primaryKey: true,
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
   },
   email: {
     allowNull: false,
@@ -21,7 +21,7 @@ const UserSchema = {
     allowNull: false,
     type: DataTypes.DATE,
     field: 'create_at',
-    defaultValue: Sequelize.NOW,
+    // defaultValue: Sequelize.NOW,
   },
 };
 class User extends Model {

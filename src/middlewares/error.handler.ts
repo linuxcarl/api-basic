@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
+const { ValidationError } = require('Sequelize');
 function logErrors(
   err: { stack: any },
   req: Request,
   res: Response,
   next: (arg0: any) => void
 ) {
-  console.log('logErrors');
   console.error(err.stack);
   next(err);
 }
@@ -19,7 +19,6 @@ function errorHandler(
   res: Response,
   next: (arg0: any) => void
 ) {
-  console.log('errorHandler');
   res.status(500).json({
     message: err.message,
     stack: err.stack,
@@ -42,4 +41,17 @@ function boomErrorHandler(
   }
   next(err);
 }
-export { logErrors, errorHandler, boomErrorHandler };
+function sequelizeErrorHandler(
+  err: any,
+  req: Request,
+  res: Response,
+  next: (arg0: any) => void
+) {
+  if (err.name.includes('Sequelize')) {
+    res.status(412).json({
+      message: err.parent.detail,
+    });
+  }
+  next(err);
+}
+export { logErrors, errorHandler, boomErrorHandler, sequelizeErrorHandler };

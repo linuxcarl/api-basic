@@ -5,6 +5,7 @@ import {
   errorHandler,
   logErrors,
   boomErrorHandler,
+  sequelizeErrorHandler,
 } from './src/middlewares/error.handler';
 
 const app = express();
@@ -32,6 +33,7 @@ const options = {
 };
 app.use(cors(options));
 app.use(logErrors);
+app.use(sequelizeErrorHandler);
 app.use(boomErrorHandler);
 app.use(errorHandler);
 
