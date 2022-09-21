@@ -7,7 +7,11 @@
     "build": "npx tsc",
     "start": "node dist/index.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "migration:generate": "sequelize-cli migration:generate --name",
+    "migration:run": "sequelize-cli db:migrate --env=development",
+    "migration:revert": "sequelize-cli db:migrate:undo",
+    "migration:delete": "sequelize-cli db:migrate:undo:all"
   },
   "keywords": [
     "Curso",
@@ -29,6 +33,7 @@
     "eslint": "^8.19.0",
     "nodemon": "^2.0.19",
     "prettier": "^2.7.1",
+    "sequelize-cli": "^6.4.1",
     "typescript": "^4.7.4"
   },
   "dependencies": {
