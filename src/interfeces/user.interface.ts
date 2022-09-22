@@ -1,7 +1,7 @@
 export interface user {
   id: string;
   name: string;
-  // jobDescriptor: string;
+  role: string;
   // username: string;
   // profilePhoto?: string;
   email: string;
